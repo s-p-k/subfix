@@ -1,0 +1,24 @@
+#!/usr/bin/env perl
+
+# subfix is a small perl script that converts iso8859-7 srt files
+# to utf-8.
+# Usage: ./subfix input.srt output.srt
+
+use Encode;
+use Encode qw(from_to);
+use IO::File;
+
+my $file = "$ARGV[0]";
+my $result = "$ARGV[1]";
+
+my $fh = IO::File->new($file, '<') or die "$file: $!";
+my $fh2 = IO::File->new($result, '+>:raw') or die "$result: $!";
+
+while (my $line = <$fh>) {
+    $octets = decode("iso-8859-7", $line);
+    $uline = encode("utf-8", $octets);
+    print $fh2 $uline;
+}
+
+$fh->close();
+$fh2->close();
