@@ -2,3 +2,8 @@ subfix
 ======
 
 convert iso8859-7 subtitles to utf8
+
+usage
+=====
+
+subfix input.srt output.srt
