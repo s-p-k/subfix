@@ -5,7 +5,6 @@
 # Usage: ./subfix input.srt output.srt
 
 use Encode;
-use Encode qw(from_to);
 use IO::File;
 
 my $file = "$ARGV[0]";
