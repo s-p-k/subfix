@@ -7,3 +7,9 @@ usage
 =====
 
 subfix input.srt output.srt
+
+TODO
+====
+
+Take account the existance of the byte order mark(BOM). BOM use is optional,
+and, if used, should appear at the start of the text stream.
