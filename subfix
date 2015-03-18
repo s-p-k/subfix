@@ -7,11 +7,16 @@
 use Encode;
 use IO::File;
 
+my $BOM = chr(hex "0xEF"). chr(hex "0xBB"). chr(hex "0xBF");
 my $file = "$ARGV[0]";
 my $result = "$ARGV[1]";
 
 my $fh = IO::File->new($file, '<') or die "$file: $!";
 my $fh2 = IO::File->new($result, '+>:raw') or die "$result: $!";
+
+print $fh2 "$BOM"; # Start by adding BOM to the beginning of file
+
+# Then convert to utf-8, line after line
 
 while (my $line = <$fh>) {
     $octets = decode("iso-8859-7", $line);
@@ -21,3 +26,4 @@ while (my $line = <$fh>) {
 
 $fh->close();
 $fh2->close();
+
