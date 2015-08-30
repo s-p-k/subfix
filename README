@@ -6,5 +6,6 @@ convert iso8859-7 subtitles to utf8
 usage
 =====
 
-subfix input.srt output.srt
+subfix -c input.srt output.srt # convert input.srt to utf8 output.srt
+subfix -s input.srt output.srt # convert input.srt to utf8 output.srt and strip text formatting too (italics, bolds etc)
 
