@@ -27,8 +27,9 @@ if (@c) {
     my $input_fh = IO::File->new($input_file, '<') or die "$input_file: $!";
     my $output_fh = IO::File->new($output_file, '+>:raw') or die "$output_file: $!";
 
-    print $output_fh "$BOM";
+    print $output_fh "$BOM"; # Start by adding BOM to the beginning of file
 
+    # Then convert to utf-8 line after line
     while (my $line = <$input_fh>) {
         my $octets = decode("iso-8859-7", $line);
         my $uline = encode("utf-8", $octets);
