@@ -1,28 +1,46 @@
-#!/usr/bin/env perl
+#!/usr/bin/perl
 
-# subfix is a small perl script that converts iso8859-7 srt files to utf-8.
-# Usage: ./subfix input.srt output.srt
-
+use strict;
+use Getopt::Long;
 use Encode;
 use IO::File;
 
+sub usage { print "Usage: $0 [-h] [-c|--convert input output]\n" }
+
+
+my ( $o, @c, $h);
 my $BOM = chr(hex "0xEF"). chr(hex "0xBB"). chr(hex "0xBF");
-my $file = "$ARGV[0]";
-my $result = "$ARGV[1]";
 
-my $fh = IO::File->new($file, '<') or die "$file: $!";
-my $fh2 = IO::File->new($result, '+>:raw') or die "$result: $!";
+GetOptions(
+    "o|option=s" => \$o,
+    "convert=s{2}" => \@c, # no need for c|convert
+#    "help" => \$help,
+    "h|help"     => \$h,
+    )
+or die usage;
 
-print $fh2 "$BOM"; # Start by adding BOM to the beginning of file
 
-# Then convert to utf-8, line after line
+usage() if $h;
 
-while (my $line = <$fh>) {
-    $octets = decode("iso-8859-7", $line);
-    $uline = encode("utf-8", $octets);
-    print $fh2 $uline;
+if (@c) {
+    my $input_file = $c[0];
+    my $output_file = $c[1];
+    my $input_fh = IO::File->new($input_file, '<') or die "$input_file: $!";
+    my $output_fh = IO::File->new($output_file, '+>:raw') or die "$output_file: $!";
+
+    print $output_fh "$BOM";
+
+    while (my $line = <$input_fh>) {
+        my $octets = decode("iso-8859-7", $line);
+        my $uline = encode("utf-8", $octets);
+        print $output_fh $uline;
+    }
+
+    $input_fh->close();
+    $output_fh->close();
 }
 
-$fh->close();
-$fh2->close();
+#print "$0: c args=@c: @ARGV\n";   
+#print "$0: c args:@c \n";
+#print "$0: $c[1]\n";
 
