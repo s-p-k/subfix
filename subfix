@@ -7,7 +7,6 @@ use IO::File;
 
 sub usage { print "Usage: $0 [-h] [-c|--convert input output]\n" }
 
-
 my ( $o, @c, $h, @s);
 my $BOM = chr(hex "0xEF"). chr(hex "0xBB"). chr(hex "0xBF");
 
@@ -23,23 +22,15 @@ or die usage;
 usage() if $h;
 
 if (@s) {
-    my $input_file = $s[0];
-    my $output_file = $s[1];
-    my $strip_formatting = 1;
-    toUtf8($input_file, $output_file, $strip_formatting);
+    toUtf8($s[0], $s[1], 1);
 }
 
 if (@c) {
-    my $input_file = $c[0];
-    my $output_file = $c[1];
-    my $strip_formatting = 0;
-    toUtf8 ($input_file, $output_file, $strip_formatting);
+    toUtf8($c[0], $c[1], 0);
 }
 
 sub toUtf8 {
-    my $input_file = $_[0];
-    my $output_file = $_[1];
-    my $strip_formatting = $_[2];
+    my ($input_file, $output_file, $strip_formatting) = @_;
     my $input_fh = IO::File->new($input_file, '<') or die "$input_file: $!";
     my $output_fh = IO::File->new($output_file, '+>:raw') or die "$output_file: $!";
 
