@@ -7,7 +7,7 @@ use Encode;
 use IO::File;
 
 my $usage_message = <<END_MESSAGE;
-    Usage: $0 [option] <input file> <outputfile>
+    Usage: subfix [option] <input file> <outputfile>
     
     options:
     -h, --help        show this message.
@@ -15,8 +15,8 @@ my $usage_message = <<END_MESSAGE;
     -s, --strip       like -c but remove text formatting too.
 
     examples:
-    $0 -c iso88597.srt utf8.srt
-    $0 -s iso88587.srt utf8.srt
+    subfix -c iso88597.srt utf8.srt
+    subfix -s iso88587.srt utf8.srt
 
     For more details see subfix(1) manual page.
 END_MESSAGE
