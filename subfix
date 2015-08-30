@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 use strict;
 use Getopt::Long;
@@ -22,35 +22,42 @@ or die usage;
 
 usage() if $h;
 
-if (@c) {
-    my $input_file = $c[0];
-    my $output_file = $c[1];
-    my $input_fh = IO::File->new($input_file, '<') or die "$input_file: $!";
-    my $output_fh = IO::File->new($output_file, '+>:raw') or die "$output_file: $!";
-
-    #print $output_fh "$BOM"; # Start by adding BOM to the beginning of file
-
-    # Then convert to utf-8 line after line
-    while (my $line = <$input_fh>) {
-        my $octets = decode("iso-8859-7", $line);
-        my $uline = encode("utf-8", $octets);
-        print $output_fh $uline;
-    }
-
-    $input_fh->close();
-    $output_fh->close();
-}
-
 if (@s) {
     my $input_file = $s[0];
     my $output_file = $s[1];
+    my $strip_formatting = 1;
+    toUtf8($input_file, $output_file, $strip_formatting);
+}
+
+if (@c) {
+    my $input_file = $c[0];
+    my $output_file = $c[1];
+    my $strip_formatting = 0;
+    toUtf8 ($input_file, $output_file, $strip_formatting);
+}
+
+sub toUtf8 {
+    my $input_file = $_[0];
+    my $output_file = $_[1];
+    my $strip_formatting = $_[2];
     my $input_fh = IO::File->new($input_file, '<') or die "$input_file: $!";
     my $output_fh = IO::File->new($output_file, '+>:raw') or die "$output_file: $!";
 
+    # add BOM to the beginning of file:
+    # print $output_fh "$BOM";
+    
+    # then convert to utf-8 line after line
     while (my $line = <$input_fh>) {
-        my $newline = $line;
-        $newline =~ s/<[^>]*>//g;
-        print $output_fh $newline;
+        my $octets = decode("iso-8859-7", $line);
+        my $uline = encode("utf-8", $octets);
+
+        if ($strip_formatting) {
+            my $new_uline = $uline;
+            $new_uline =~ s/<[^>]*>//g;
+            print $output_fh $new_uline;
+        } else {
+            print $output_fh $uline;
+        }
     }
 
     $input_fh->close();
