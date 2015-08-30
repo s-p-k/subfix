@@ -13,8 +13,7 @@ my $BOM = chr(hex "0xEF"). chr(hex "0xBB"). chr(hex "0xBF");
 
 GetOptions(
     "o|option=s" => \$o,
-    "convert=s{2}" => \@c, # no need for c|convert
-#    "help" => \$help,
+    "convert=s{2}" => \@c,
     "h|help"     => \$h,
     )
 or die usage;
@@ -39,8 +38,4 @@ if (@c) {
     $input_fh->close();
     $output_fh->close();
 }
-
-#print "$0: c args=@c: @ARGV\n";   
-#print "$0: c args:@c \n";
-#print "$0: $c[1]\n";
 
