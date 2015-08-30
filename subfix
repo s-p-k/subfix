@@ -2,19 +2,35 @@
 
 use strict;
 use Getopt::Long;
+use Pod::Usage;
 use Encode;
 use IO::File;
 
-sub usage { print "Usage: $0 [-h] [-c|--convert input output]\n" }
+my $usage_message = <<END_MESSAGE;
+    Usage: $0 [option] <input file> <outputfile>
+    
+    options:
+    -h, --help        show this message.
+    -c, --convert     convert input file to output file.
+    -s, --strip       like -c but remove text formatting too.
 
-my ( $o, @c, $h, @s);
+    examples:
+    $0 -c iso88597.srt utf8.srt
+    $0 -s iso88587.srt utf8.srt
+
+    For more details see subfix(1) manual page.
+END_MESSAGE
+
+#sub usage { print "Usage: $0 [-h] [-c|--convert input.srt output.srt]\n" }
+sub usage { print $usage_message }
+
+my (@c, $h, @s);
 my $BOM = chr(hex "0xEF"). chr(hex "0xBB"). chr(hex "0xBF");
 
 GetOptions(
-    "o|option=s" => \$o,
     "convert=s{2}" => \@c,
     "strip=s{2}" => \@s,
-    "h|help"     => \$h,
+    "help" => \$h,
     )
 or die usage;
 
@@ -35,7 +51,7 @@ sub toUtf8 {
     my $output_fh = IO::File->new($output_file, '+>:raw') or die "$output_file: $!";
 
     # add BOM to the beginning of file:
-    # print $output_fh "$BOM";
+    #print $output_fh "$BOM";
     
     # then convert to utf-8 line after line
     while (my $line = <$input_fh>) {
