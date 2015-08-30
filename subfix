@@ -8,12 +8,13 @@ use IO::File;
 sub usage { print "Usage: $0 [-h] [-c|--convert input output]\n" }
 
 
-my ( $o, @c, $h);
+my ( $o, @c, $h, @s);
 my $BOM = chr(hex "0xEF"). chr(hex "0xBB"). chr(hex "0xBF");
 
 GetOptions(
     "o|option=s" => \$o,
     "convert=s{2}" => \@c,
+    "strip=s{2}" => \@s,
     "h|help"     => \$h,
     )
 or die usage;
@@ -27,7 +28,7 @@ if (@c) {
     my $input_fh = IO::File->new($input_file, '<') or die "$input_file: $!";
     my $output_fh = IO::File->new($output_file, '+>:raw') or die "$output_file: $!";
 
-    print $output_fh "$BOM"; # Start by adding BOM to the beginning of file
+    #print $output_fh "$BOM"; # Start by adding BOM to the beginning of file
 
     # Then convert to utf-8 line after line
     while (my $line = <$input_fh>) {
@@ -40,3 +41,18 @@ if (@c) {
     $output_fh->close();
 }
 
+if (@s) {
+    my $input_file = $s[0];
+    my $output_file = $s[1];
+    my $input_fh = IO::File->new($input_file, '<') or die "$input_file: $!";
+    my $output_fh = IO::File->new($output_file, '+>:raw') or die "$output_file: $!";
+
+    while (my $line = <$input_fh>) {
+        my $newline = $line;
+        $newline =~ s/<[^>]*>//g;
+        print $output_fh $newline;
+    }
+
+    $input_fh->close();
+    $output_fh->close();
+}
