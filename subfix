@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 
 use strict;
+use warnings;
 use Getopt::Long;
 use Pod::Usage;
 use Encode;
@@ -21,7 +22,6 @@ my $usage_message = <<END_MESSAGE;
     For more details see subfix(1) manual page.
 END_MESSAGE
 
-#sub usage { print "Usage: $0 [-h] [-c|--convert input.srt output.srt]\n" }
 sub usage { print $usage_message }
 
 my (@c, $h, @s);
@@ -55,8 +55,8 @@ sub toUtf8 {
     
     # then convert to utf-8 line after line
     while (my $line = <$input_fh>) {
-        my $octets = decode("iso-8859-7", $line);
-        my $uline = encode("utf-8", $octets);
+        my $unicode_string = decode("iso-8859-7", $line);
+        my $uline = encode("utf-8", $unicode_string);
 
         if ($strip_formatting) {
             my $new_uline = $uline;
